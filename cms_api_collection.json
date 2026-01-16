@@ -1,0 +1,271 @@
+{
+	"info": {
+		"_postman_id": "aa11bb22-cc33-44dd-55ee-66ff77889900",
+		"name": "Conference Management System API",
+		"description": "API Collection for the Conference Management System built with Django REST Framework.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Conferences",
+			"item": [
+				{
+					"name": "List All Conferences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conferences/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conferences",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Upcoming Conferences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conferences/upcoming/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conferences",
+								"upcoming",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conference Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/conferences/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"conferences",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registrations",
+			"item": [
+				{
+					"name": "Create Registration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"conference\": 1,\n    \"session\": 1,\n    \"attendee\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/registrations/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"registrations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Registrations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/registrations/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"registrations",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Process Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registration_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/process/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"process",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search & Recommendations",
+			"item": [
+				{
+					"name": "Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/search/?q=Business",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"search",
+								""
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "Business"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attendee Recommendations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/attendees/1/recommendations/?email=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"attendees",
+								"1",
+								"recommendations",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Conference Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reports/conferences/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"conferences",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Session Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reports/sessions/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reports",
+								"sessions",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}
