@@ -1,89 +1,119 @@
 # Conference Management System
 
-A Django REST Framework application for managing conferences, sessions, attendees, and registrations.
+A robust Django REST Framework application for managing professional conferences, sessions, attendees, and registrations. This system is built with best practices in mind, including **Universal API Responses**, **JWT Authentication**, and **API Versioning**.
 
 ## Features
-- **Conferences**: Manage conference status (Upcoming, Ongoing, Completed) automatically.
-- **Sessions**: Manage sessions with overlap validation and capacity checks.
-- **Attendees & Registrations**: Register attendees, handle payments (mock), and track capacity.
-- **Recommendations**: Recommend sessions based on attendee preferences (mock email).
-- **Reports**: Analytics for conferences and sessions (revenue, attendance).
-- **Logging**: Middleware logs all API requests and responses.
+
+### Core Functionality
+- **Conferences**: Full CRUD. Status updates automatically (Upcoming, Ongoing, Completed) based on date.
+- **Sessions**: Full CRUD. Includes strict validation for:
+  - **Overlaps**: Prevents sessions from overlapping in the same conference.
+  - **Capacity**: Enforces attendee limits per session.
+- **Attendees & Registrations**: Register attendees with validation for double-booking.
+- **Search**: Advanced search across Conference names/descriptions and Session names/speakers.
+- **Reports**: Analytical endpoints for conference attendance and session revenue.
+
+### Advanced Features
+- **JWT Authentication**: Secure access using `Bearer` tokens.
+- **API Versioning**: All endpoints are namespaced under `/api/v1/`.
+- **Universal Response Format**: All API responses (success or error) follow a consistent JSON structure.
+- **Logging**: Middleware logs every API request/response to the database (`APIRequestLog`).
+- **Soft Deletes**: Entities are soft-deleted (`is_deleted`) to preserve data integrity.
+- **Dynamic Recommendations**: Smart session suggestions based on attendee preferences (Speaker/Topic match).
 
 ## Tech Stack
-- Django 5.x / 6.x
-- Django REST Framework
-- Database: MySQL (Configured for Production) / SQLite (Dev Default)
-- PyMySQL (MySQL Driver)
+- **Framework**: Django 5+, Django REST Framework
+- **Auth**: SimpleJWT
+- **Database**: MySQL (Production ready) / SQLite (Dev default)
+- **Utilities**: PyMySQL, Cryptography
 
 ## Setup
 
-1. **Clone the repository**
-2. **Install Dependencies**
-   ```bash
-   pip install django djangorestframework pymysql cryptography
-   ```
-3. **Database Setup**
-   - By default, the project uses `SQLite` for development ease.
-   - To use **MySQL**:
-     - Create a database `cms_db`.
-     - Uncomment the MySQL database configuration in `cms_project/settings.py`.
-     - Comment out the SQLite configuration.
-4. **Run Migrations**
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
-5. **Populate Sample Data**
-   ```bash
-   python manage.py populate_data
-   ```
-6. **Run Server**
-   ```bash
-   python manage.py runserver
-   ```
+### 1. Installation
+Clone the repository and install dependencies:
+```bash
+pip install -r requirements.txt
+```
+*Dependencies include: `django`, `djangorestframework`, `djangorestframework-simplejwt`, `pymysql`, `cryptography`.*
 
-## API Endpoints
+### 2. Database Configuration
+The project is pre-configured for **MySQL**. Ensure you have a MySQL server running and create a database named `cms_db`.
+*(To switch to SQLite for quick testing, modify `cms_project/settings.py`)*.
 
-### Conferences
-- `GET /api/conferences/` - List all
-- `GET /api/conferences/{id}/` - Details
-- `GET /api/conferences/upcoming/` - List upcoming conferences
+### 3. Migrations
+Initialize the database:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
-### Registrations
-- `POST /api/registrations/` - Register for a session
-  ```json
-  {
-    "conference": 1,
-    "session": 1,
-    "attendee": 1
-  }
-  ```
+### 4. Create Superuser (Admin)
+```bash
+python manage.py createsuperuser
+```
 
-### Payments
-- `POST /api/payments/process/` - Process payment (simulated)
-  ```json
-  { "registration_id": 1 }
-  ```
+### 5. Populate Sample Data
+Run the custom management command to seed the database with professional sample data:
+```bash
+python manage.py populate_data
+```
 
-### Search
-- `GET /api/search/?q=Keyword` - Search conferences and sessions
+### 6. Run Server
+```bash
+python manage.py runserver
+```
 
-### Attendee Recommendations
-- `GET /api/attendees/{id}/recommendations/?email=true` - Get recommended sessions and optionally send email.
+## API Documentation
 
-### Reports
-- `GET /api/reports/conferences/`
-- `GET /api/reports/sessions/`
+The API uses **JWT Authentication** and versioning (`v1`).
+**Base URL**: `http://127.0.0.1:8000/api/v1/`
 
-## Design Decisions
-- **Clean Architecture**: Services layer (`conferences/services.py`) separates business logic from Views/Models.
-- **Middleware**: `RequestLoggingMiddleware` ensures all API interactions are audited.
-- **Validation**:
-  - Model-level validation (`clean()`) ensures data integrity (e.g., date ranges, overlaps).
-  - Serializer validation handles input format.
-- **Scalability**: Database optimization via `select_related` (used in ViewSets/Serializers implicitly or can be added).
+### Authentication
+All protected endpoints require the header: `Authorization: Bearer <access_token>`
 
-## Notes
-- `pymysql` is used as the MySQL driver.
-- The default database is set to SQLite to ensure the project runs immediately without local MySQL setup.
+1.  **Login (Get Token)**
+    -   `POST /api/v1/token/`
+    -   Payload: `{ "username": "admin", "password": "..." }`
+2.  **Refresh Token**
+    -   `POST /api/v1/token/refresh/`
+
+### Endpoints (v1)
+
+| Resource | Methods | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Conferences** | CRUD | `/conferences/` | Manage conferences. |
+| | GET | `/conferences/upcoming/` | List future conferences with details. |
+| **Sessions** | CRUD | `/sessions/` | Manage sessions. |
+| **Attendees** | CRUD | `/attendees/` | Manage attendees. |
+| | GET | `/attendees/{id}/recommendations/` | Get tailored session suggestions. |
+| **Registrations** | CRUD | `/registrations/` | Register user for session. |
+| **Payments** | POST | `/payments/process/` | Simulate payment for registration. |
+| **Search** | GET | `/search/?q=Keyword` | Search across Conferences and Sessions. |
+| **Logs** | GET | `/core/logs/` | View system API logs (Admin only). |
+| **Reports** | GET | `/reports/conferences/` | Attendance analytics. |
+| | GET | `/reports/sessions/` | Revenue and capacity analytics. |
+
+### Universal Response Format
+**Success**:
+```json
+{
+  "status": "success",
+  "message": "Operation successful",
+  "data": { ... }
+}
+```
+
+**Error**:
+```json
+{
+  "status": "error",
+  "message": "Validation failed",
+  "errors": { "field": ["Error detail"] }
+}
+```
+
+## Postman Collection
+A full Postman collection is included in the root directory: `cms_api_collection.json`.
+1.  Import into Postman.
+2.  Run the **"Auth > Login"** request first to automatically set your environment token.
+3.  Enjoy testing!

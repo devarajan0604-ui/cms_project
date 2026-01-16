@@ -8,16 +8,42 @@ from .serializers import (ConferenceSerializer, SessionSerializer,
                           AttendeeSerializer, RegistrationSerializer, RegistrationCreateSerializer)
 from .services import check_payment_status, get_attendee_recommendations, send_recommendation_email
 
-class ConferenceViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Conference.objects.all()
+class ConferenceViewSet(viewsets.ModelViewSet):
+    queryset = Conference.objects.filter(is_deleted=False)
     serializer_class = ConferenceSerializer
 
     @action(detail=False, methods=['get'])
     def upcoming(self, request):
         today = timezone.now().date()
-        upcoming = Conference.objects.filter(start_date__gt=today)
+        upcoming = Conference.objects.filter(start_date__gt=today, is_deleted=False)
         serializer = self.get_serializer(upcoming, many=True)
         return Response(serializer.data)
+    
+    def perform_destroy(self, instance):
+        # Soft delete
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save()
+
+class SessionViewSet(viewsets.ModelViewSet):
+    queryset = Session.objects.filter(is_deleted=False)
+    serializer_class = SessionSerializer
+    
+    def perform_destroy(self, instance):
+        # Soft delete
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save()
+
+class AttendeeViewSet(viewsets.ModelViewSet):
+    # Added AttendeeViewSet just in case, good for management
+    queryset = Attendee.objects.filter(is_deleted=False)
+    serializer_class = AttendeeSerializer
+    
+    def perform_destroy(self, instance):
+        instance.is_deleted = True
+        instance.deleted_at = timezone.now()
+        instance.save()
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = Registration.objects.all()
@@ -59,8 +85,23 @@ class PaymentProcessView(views.APIView):
 class SearchAPIView(views.APIView):
     def get(self, request):
         query = request.query_params.get('q', '')
-        conferences = Conference.objects.filter(conference_name__icontains=query)
-        sessions = Session.objects.filter(session_name__icontains=query)
+        if not query:
+             return Response({
+            "conferences": [],
+            "sessions": []
+        })
+
+        from django.db.models import Q
+        
+        conferences = Conference.objects.filter(
+            Q(conference_name__icontains=query) | Q(description__icontains=query),
+            is_deleted=False
+        )
+        
+        sessions = Session.objects.filter(
+            Q(session_name__icontains=query) | Q(speaker__icontains=query),
+            is_deleted=False
+        )
         
         return Response({
             "conferences": ConferenceSerializer(conferences, many=True).data,
@@ -70,7 +111,7 @@ class SearchAPIView(views.APIView):
 class AttendeeRecommendationView(views.APIView):
     def get(self, request, pk):
         try:
-            attendee = Attendee.objects.get(pk=pk)
+            attendee = Attendee.objects.get(pk=pk, is_deleted=False)
             recommendations = get_attendee_recommendations(attendee)
             send_email = request.query_params.get('email', 'false').lower() == 'true'
             
@@ -84,19 +125,12 @@ class AttendeeRecommendationView(views.APIView):
 # Reports
 class ConferenceReportView(views.APIView):
     def get(self, request):
-        report = Conference.objects.annotate(
-            total_attendees=Count('sessions__registration'), # Approximate via registration
-            session_count=Count('sessions')
-        ).values('conference_name', 'total_attendees', 'session_count')
-        # Note: distinct=True might be needed if multiple paths exist, but here it's simple. 
-        # Actually session__registration counts registrations for ALL sessions. 
-        # Correct logic:
         data = []
-        for conf in Conference.objects.all():
+        for conf in Conference.objects.filter(is_deleted=False):
             unique_attendees = Registration.objects.filter(conference=conf).values('attendee').distinct().count()
             data.append({
                 "conference": conf.conference_name,
-                "sessions": conf.sessions.count(),
+                "sessions": conf.sessions.filter(is_deleted=False).count(),
                 "unique_attendees": unique_attendees
             })
         return Response(data)
@@ -104,7 +138,7 @@ class ConferenceReportView(views.APIView):
 class SessionReportView(views.APIView):
     def get(self, request):
         data = []
-        for session in Session.objects.all():
+        for session in Session.objects.filter(is_deleted=False):
             registrations = Registration.objects.filter(session=session)
             total_registrations = registrations.count()
             paid_registrations = registrations.filter(payment_status='Paid').count()

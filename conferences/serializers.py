@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Conference, Session, Attendee, Registration
+from rest_framework.validators import UniqueTogetherValidator
+
 
 class SessionSerializer(serializers.ModelSerializer):
     conference_name = serializers.CharField(source='conference.conference_name', read_only=True)
@@ -33,6 +35,13 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Registration
         fields = ['conference', 'session', 'attendee']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Registration.objects.all(),
+                fields=['session', 'attendee'],
+                message="This attendee is already registered for the selected session."
+            )
+        ]
 
     def validate(self, data):
         # Additional validation can go here if not covered by model

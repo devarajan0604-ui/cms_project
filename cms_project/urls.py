@@ -16,9 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+from django.conf import settings
+from django.conf.urls.static import static 
+from django.shortcuts import render
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('conferences.urls')),
+    
+    # API v1 Auth
+    path('api/v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    # API v1 Apps
+    path('api/v1/', include('core.api_urls')), # Core APIs (Logs)
+    path('api/v1/', include('conferences.urls')), # Conference APIs
+    
+    # Home
     path('', include('core.urls')),
 ]
+if settings.DEBUG or True:  # Force serving media even if DEBUG=False
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

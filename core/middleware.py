@@ -36,9 +36,9 @@ class RequestLoggingMiddleware(MiddlewareMixin):
                 
                 APIRequestLog.objects.create(
                     api_endpoint=request.path,
-                    http_method=request.method,
-                    request_payload=request_payload[:5000], # Trucate if too long
-                    response_payload=response_payload[:5000],
+                    method=request.method,
+                    request_body=request_payload[:5000], # Trucate if too long
+                    response_body=response_payload[:5000],
                     status_code=response.status_code
                 )
             except Exception as e:

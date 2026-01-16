@@ -24,14 +24,33 @@ def get_attendee_recommendations(attendee):
     # Get registered session IDs
     registered_session_ids = Registration.objects.filter(attendee=attendee).values_list('session_id', flat=True)
 
-    # Recommend sessions in those conferences
-    recommendations = Session.objects.filter(
-        conference_id__in=conference_ids
+    # Get list of preferred speakers and session name keywords (simulating topics)
+    preferred_speakers = preferred_sessions.values_list('speaker', flat=True)
+    preferred_keywords = []
+    for name in preferred_sessions.values_list('session_name', flat=True):
+        preferred_keywords.extend(name.split())
+    
+    # Filter generic common words
+    stop_words = {'the', 'a', 'an', 'in', 'on', 'at', 'for', 'to', 'of', 'and', 'session', 'workshop'}
+    preferred_keywords = [k for k in preferred_keywords if k.lower() not in stop_words and len(k) > 3]
+
+    # Find candidates
+    # 1. Same Speaker
+    # 2. Similar Topic (matching keywords in session name)
+    from django.db.models import Q
+    
+    query = Q(speaker__in=preferred_speakers)
+    for keyword in preferred_keywords:
+        query |= Q(session_name__icontains=keyword)
+
+    recommendations = Session.objects.filter(query).filter(
+        conference_id__in=conference_ids,
+        is_deleted=False
     ).exclude(
         id__in=registered_session_ids
     ).exclude(
         id__in=preferred_sessions.values_list('id', flat=True)
-    ).order_by('start_time')[:5]
+    ).distinct().order_by('start_time')[:5]
 
     return recommendations
 

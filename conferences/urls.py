@@ -1,10 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import (ConferenceViewSet, RegistrationViewSet, PaymentProcessView, 
-                    SearchAPIView, AttendeeRecommendationView, ConferenceReportView, SessionReportView)
+from .views import (ConferenceViewSet, RegistrationViewSet, SessionViewSet, AttendeeViewSet,
+                    PaymentProcessView, SearchAPIView, AttendeeRecommendationView, 
+                    ConferenceReportView, SessionReportView)
 
 router = DefaultRouter()
 router.register(r'conferences', ConferenceViewSet, basename='conference')
+router.register(r'sessions', SessionViewSet, basename='session')
+router.register(r'attendees', AttendeeViewSet, basename='attendee')
 router.register(r'registrations', RegistrationViewSet, basename='registration')
 
 urlpatterns = [

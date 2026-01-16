@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,24 +17,28 @@
             align-items: center;
             height: 100vh;
         }
+
         .container {
             text-align: center;
             background: white;
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             width: 90%;
         }
+
         h1 {
             color: #2c3e50;
             margin-bottom: 1rem;
         }
+
         p {
             font-size: 1.1rem;
             margin-bottom: 2rem;
             color: #666;
         }
+
         .btn {
             display: inline-block;
             background-color: #3498db;
@@ -44,34 +49,41 @@
             font-weight: bold;
             transition: background-color 0.3s;
         }
+
         .btn:hover {
             background-color: #2980b9;
         }
+
         .links {
             margin-top: 1.5rem;
             font-size: 0.9rem;
         }
+
         .links a {
             color: #3498db;
             text-decoration: none;
             margin: 0 10px;
         }
+
         .links a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Conference Management System</h1>
         <p>Welcome to the CMS API. Manage conferences, sessions, and registrations efficiently.</p>
-        <a href="/api/conferences/" class="btn">Explore API</a>
-        
+        <!-- Updated links to point to v1 API -->
+        <a href="/api/v1/conferences/" class="btn">Explore API</a>
+
         <div class="links">
-            <a href="/api/conferences/upcoming/">Upcoming Conferences</a>
-            <a href="/api/reports/sessions/">Session Reports</a>
+            <a href="/api/v1/conferences/upcoming/">Upcoming Conferences</a>
+            <a href="/api/v1/reports/sessions/">Session Reports</a>
             <a href="/admin/">Admin Panel</a>
         </div>
     </div>
 </body>
+
 </html>
