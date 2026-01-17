@@ -103,102 +103,6 @@
             ]
         },
         {
-            "name": "Auth",
-            "item": [
-                {
-                    "name": "Login (Get Token)",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "var jsonData = pm.response.json();",
-                                    "pm.environment.set(\"access_token\", jsonData.access);",
-                                    "pm.environment.set(\"refresh_token\", jsonData.refresh);"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                {
-                                    "key": "username",
-                                    "value": "testuser",
-                                    "type": "text"
-                                },
-                                {
-                                    "key": "password",
-                                    "value": "testpassword123",
-                                    "type": "text"
-                                }
-                            ]
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/v1/token/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "v1",
-                                "token",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Refresh Token",
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "var jsonData = pm.response.json();",
-                                    "pm.environment.set(\"access_token\", jsonData.access);"
-                                ],
-                                "type": "text/javascript"
-                            }
-                        }
-                    ],
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                {
-                                    "key": "refresh",
-                                    "value": "{{refresh_token}}",
-                                    "type": "text"
-                                }
-                            ]
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/v1/token/refresh/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "v1",
-                                "token",
-                                "refresh",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
             "name": "Conferences",
             "item": [
                 {
@@ -252,36 +156,6 @@
                     "response": []
                 },
                 {
-                    "name": "Create Attendee",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"attendee_name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"phone_number\": \"555-0199\",\n    \"organization\": \"Tech Giant\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{base_url}}/api/v1/attendees/",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "v1",
-                                "attendees",
-                                ""
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
                     "name": "List Upcoming Conferences",
                     "request": {
                         "method": "GET",
@@ -322,12 +196,368 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "Update Conference",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"conference_name\": \"Updated Tech Conf 2026\",\n    \"start_date\": \"2026-06-01\",\n    \"end_date\": \"2026-06-04\",\n    \"location\": \"Dallas\",\n    \"description\": \"Updated Innovation hub.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/conferences/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "conferences",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Conference",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/conferences/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "conferences",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Sessions",
+            "item": [
+                {
+                    "name": "List All Sessions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/sessions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "sessions",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_name\": \"ORG Testing\",\n    \"speaker\": \"John Doe\",\n    \"start_time\": \"2026-02-15 10:30\",\n    \"end_time\": \"2026-02-15 11:30\",\n    \"conference\": 1,\n    \"max_attendees\": 50,\n    \"price\": 10.00\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/sessions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "sessions",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Session Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/sessions/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "sessions",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Session",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"session_name\": \"Updated Session Name\",\n    \"speaker\": \"Jane Doe\",\n    \"start_time\": \"2026-02-15 11:00\",\n    \"end_time\": \"2026-02-15 12:00\",\n    \"conference\": 1,\n    \"max_attendees\": 60,\n    \"price\": 15.00\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/sessions/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "sessions",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Session",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/sessions/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "sessions",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Attendees",
+            "item": [
+                {
+                    "name": "List All Attendees",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Attendee",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"attendee_name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"phone_number\": \"555-0199\",\n    \"organization\": \"Tech Giant\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Attendee Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Attendee",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"attendee_name\": \"Updated User\",\n    \"email\": \"updateduser@example.com\",\n    \"phone_number\": \"555-9999\",\n    \"organization\": \"Tech Titan\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Attendee",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Attendee Recommendations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/attendees/1/recommendations/?email=true",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "attendees",
+                                "1",
+                                "recommendations",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "email",
+                                    "value": "true"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
                 }
             ]
         },
         {
             "name": "Registrations",
             "item": [
+                {
+                    "name": "List All Registrations",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/registrations/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "registrations",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
                 {
                     "name": "Create Registration",
                     "request": {
@@ -359,12 +589,12 @@
                     "response": []
                 },
                 {
-                    "name": "List Registrations",
+                    "name": "Get Registration Details",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{base_url}}/api/v1/registrations/",
+                            "raw": "{{base_url}}/api/v1/registrations/1/",
                             "host": [
                                 "{{base_url}}"
                             ],
@@ -372,6 +602,59 @@
                                 "api",
                                 "v1",
                                 "registrations",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Registration",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"conference\": 1,\n    \"session\": 1,\n    \"attendee\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/registrations/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "registrations",
+                                "1",
+                                ""
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Registration",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/registrations/1/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "registrations",
+                                "1",
                                 ""
                             ]
                         }
@@ -443,7 +726,7 @@
             ]
         },
         {
-            "name": "Search & Recommendations",
+            "name": "Search",
             "item": [
                 {
                     "name": "Search",
@@ -465,34 +748,6 @@
                                 {
                                     "key": "q",
                                     "value": "Business"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Attendee Recommendations",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{base_url}}/api/v1/attendees/1/recommendations/?email=true",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "v1",
-                                "attendees",
-                                "1",
-                                "recommendations",
-                                ""
-                            ],
-                            "query": [
-                                {
-                                    "key": "email",
-                                    "value": "true"
                                 }
                             ]
                         }

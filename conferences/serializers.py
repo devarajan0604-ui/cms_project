@@ -5,6 +5,10 @@ from rest_framework.validators import UniqueTogetherValidator
 
 class SessionSerializer(serializers.ModelSerializer):
     conference_name = serializers.CharField(source='conference.conference_name', read_only=True)
+    conference = serializers.PrimaryKeyRelatedField(
+        queryset=Conference.objects.all(),
+        error_messages={'does_not_exist': 'The selected conference does not exist.'}
+    )
 
     class Meta:
         model = Session
@@ -25,6 +29,18 @@ class AttendeeSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.ModelSerializer):
     attendee_name = serializers.CharField(source='attendee.attendee_name', read_only=True)
     session_name = serializers.CharField(source='session.session_name', read_only=True)
+    conference = serializers.PrimaryKeyRelatedField(
+        queryset=Conference.objects.all(),
+        error_messages={'does_not_exist': 'The selected conference does not exist.'}
+    )
+    session = serializers.PrimaryKeyRelatedField(
+        queryset=Session.objects.all(),
+        error_messages={'does_not_exist': 'The selected session does not exist.'}
+    )
+    attendee = serializers.PrimaryKeyRelatedField(
+        queryset=Attendee.objects.all(),
+        error_messages={'does_not_exist': 'The selected attendee does not exist.'}
+    )
 
     class Meta:
         model = Registration
@@ -32,6 +48,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
         read_only_fields = ['payment_status', 'registration_date']
 
 class RegistrationCreateSerializer(serializers.ModelSerializer):
+    conference = serializers.PrimaryKeyRelatedField(
+        queryset=Conference.objects.all(),
+        error_messages={'does_not_exist': 'The selected conference does not exist.'}
+    )
+    session = serializers.PrimaryKeyRelatedField(
+        queryset=Session.objects.all(),
+        error_messages={'does_not_exist': 'The selected session does not exist.'}
+    )
+    attendee = serializers.PrimaryKeyRelatedField(
+        queryset=Attendee.objects.all(),
+        error_messages={'does_not_exist': 'The selected attendee does not exist.'}
+    )
     class Meta:
         model = Registration
         fields = ['conference', 'session', 'attendee']

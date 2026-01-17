@@ -122,12 +122,12 @@ All API responses follow a strict, predictable structure.
 ### 5.1 Conferences
 
 #### List All Conferences
-*   **Test**: `GET /api/v1/conferences/`
+*   **Endpoint**: `GET /api/v1/conferences/`
 *   **Response**: List of all conferences.
 
 #### List Upcoming Conferences
 *   **Endpoint**: `GET /api/v1/conferences/upcoming/`
-*   **Description**: specialized endpoint for future events.
+*   **Description**: Specialized endpoint for future events.
 
 #### Create Conference
 *   **Endpoint**: `POST /api/v1/conferences/`
@@ -142,9 +142,25 @@ All API responses follow a strict, predictable structure.
     }
     ```
 
+#### Get Conference Details
+*   **Endpoint**: `GET /api/v1/conferences/{id}/`
+*   **Description**: Get details of a specific conference.
+
+#### Update Conference
+*   **Endpoint**: `PUT /api/v1/conferences/{id}/`
+*   **Body**: JSON object with updated fields.
+
+#### Delete Conference
+*   **Endpoint**: `DELETE /api/v1/conferences/{id}/`
+*   **Description**: Soft deletes the conference.
+
 ---
 
 ### 5.2 Sessions
+
+#### List All Sessions
+*   **Endpoint**: `GET /api/v1/sessions/`
+*   **Response**: List of all sessions.
 
 #### Create Session
 *   **Endpoint**: `POST /api/v1/sessions/`
@@ -162,9 +178,21 @@ All API responses follow a strict, predictable structure.
     ```
 *   **Validation**: Start time must be before End time. Sessions cannot overlap within the same conference.
 
+#### Get Session Details
+*   **Endpoint**: `GET /api/v1/sessions/{id}/`
+
+#### Update Session
+*   **Endpoint**: `PUT /api/v1/sessions/{id}/`
+
+#### Delete Session
+*   **Endpoint**: `DELETE /api/v1/sessions/{id}/`
+
 ---
 
 ### 5.3 Attendees & Recommendations
+
+#### List All Attendees
+*   **Endpoint**: `GET /api/v1/attendees/`
 
 #### Create Attendee
 *   **Endpoint**: `POST /api/v1/attendees/`
@@ -178,6 +206,15 @@ All API responses follow a strict, predictable structure.
     }
     ```
 
+#### Get Attendee Details
+*   **Endpoint**: `GET /api/v1/attendees/{id}/`
+
+#### Update Attendee
+*   **Endpoint**: `PUT /api/v1/attendees/{id}/`
+
+#### Delete Attendee
+*   **Endpoint**: `DELETE /api/v1/attendees/{id}/`
+
 #### Get Recommendations
 *   **Endpoint**: `GET /api/v1/attendees/{id}/recommendations/?email=true`
 *   **Description**: Get suggested sessions based on the attendee's interest (speaker overlap or topic match). Optionally sends an email.
@@ -185,6 +222,9 @@ All API responses follow a strict, predictable structure.
 ---
 
 ### 5.4 Registrations & Payments
+
+#### List All Registrations
+*   **Endpoint**: `GET /api/v1/registrations/`
 
 #### Create Registration
 *   **Endpoint**: `POST /api/v1/registrations/`
@@ -198,6 +238,15 @@ All API responses follow a strict, predictable structure.
     ```
 *   **Rules**: Checks for session capacity and attendee schedule conflicts.
 
+#### Get Registration Details
+*   **Endpoint**: `GET /api/v1/registrations/{id}/`
+
+#### Update Registration
+*   **Endpoint**: `PUT /api/v1/registrations/{id}/`
+
+#### Delete Registration
+*   **Endpoint**: `DELETE /api/v1/registrations/{id}/`
+
 #### Process Payment
 *   **Endpoint**: `POST /api/v1/payments/process/`
 *   **Body**:
@@ -210,7 +259,7 @@ All API responses follow a strict, predictable structure.
 
 ---
 
-### 5.5 Reports & Search
+### 5.5 Reports, Search & Logs
 
 #### Search
 *   **Endpoint**: `GET /api/v1/search/?q=Keyword`
@@ -224,7 +273,9 @@ All API responses follow a strict, predictable structure.
 *   **Endpoint**: `GET /api/v1/reports/sessions/`
 *   **Data**: Session Name, Total Registrations, Remaining Capacity, Revenue.
 
----
+#### Request Logs
+*   **Endpoint**: `GET /api/v1/core/logs/`
+*   **Description**: View API request logs (method, path, user, timestamp).
 
 ## 6. Testing
 
